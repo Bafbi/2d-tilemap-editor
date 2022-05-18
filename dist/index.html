@@ -4,22 +4,27 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="./index.js" type="module"></script>
+    <script src="./app.js" type="module"></script>
     <link rel="stylesheet" href="./style.css">
     <title>level editor</title>
 </head>
 <body>
-    <div class="canvasWindow">
-        <div class="toolbar"></div>
-        <canvas id="editor"></canvas>
+    <div id="newMap" style="display: none;">
+            <input type="number" name="width" id="map-width">
+            <input type="number" name="height" id="map-height">
+            <button></button>
+
     </div>
-    <div class="canvasWindow">
+    <div id="tilesheet" class="sheetWindow">
         <div class="toolbar"></div>
-        <canvas id="tileSheet"></canvas>
+        <img src="../ressource/tilesheet.png" alt="la tilesheet" width="200px" height="200px" style="image-rendering: pixelated;">
     </div>
-    <div class="canvasWindow">
+    <div id="spritesheet" class="sheetWindow">
         <div class="toolbar"></div>
-        <canvas id="objectSheet"></canvas>
+        <img src="../ressource/spritesheet.png" alt="la spritesheet" width="200px" height="200px" style="image-rendering: pixelated;">
     </div>
+
+    <canvas id="editor"></canvas>
+
 </body>
 </html>
