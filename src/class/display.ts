@@ -1,13 +1,15 @@
 import { Camera } from "./camera.js";
 import { Map } from "./map.js";
 import { Sheet } from "./sheet.js";
+import { Vec2 } from "./vec2.js";
 
 export class Display {
 
     context: CanvasRenderingContext2D;
     buffer: CanvasRenderingContext2D;
     camera: Camera = new Camera();
-    ratio: number = 1;
+    ratio: Vec2 = new Vec2();
+    tileIndex: Vec2 = new Vec2();
 
     constructor(canvasElem: HTMLCanvasElement) {
         this.context = canvasElem.getContext("2d") as CanvasRenderingContext2D;
@@ -39,6 +41,23 @@ export class Display {
                 break;
             default:
                 break;
+        }
+    }
+
+    drawRectangle(x: number, y: number, width: number, height: number, color: string | CanvasGradient | CanvasPattern) {
+        this.buffer.fillStyle = color;
+        this.buffer.fillRect(Math.round(x), Math.round(y), width, height);
+    }
+
+    drawGrid(width: number, height: number, tileSize) {
+        this.context.fillStyle = 'rgba(0, 0, 0, 0.6)';
+        for (let x = 0; x <= width; x++) {
+            const posX = (x * tileSize - this.camera.pos1.x) / (this.camera.pos2.x / this.context.canvas.width)
+            this.context.fillRect(posX - 1, 0, 2, this.context.canvas.height);
+        }
+        for (let y = 0; y <= height; y++) {
+            const posY = (y * tileSize - this.camera.pos1.y) / (this.camera.pos2.y / this.context.canvas.height)
+            this.context.fillRect(0, posY - 1, this.context.canvas.width, 2);
         }
     }
 
@@ -97,7 +116,7 @@ export class Display {
 
     render() {
         // this.clear('CONTEXT');
-        this.fill('CONTEXT', 'black')
+        this.fill('CONTEXT', 'white')
         this.context.drawImage(
             this.buffer.canvas,
             this.camera.pos1.x,
@@ -112,7 +131,7 @@ export class Display {
     }
 
     updateRatio() {
-        this.ratio = this.context.canvas.width / this.buffer.canvas.width;
+        this.ratio.set(this.context.canvas.width / this.buffer.canvas.width, this.context.canvas.height / this.buffer.canvas.height);
     }
 
     resizeBuffer(mapWidth: number, mapHeight: number, tileSize: number) {

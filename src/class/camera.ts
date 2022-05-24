@@ -15,6 +15,8 @@ export class Camera {
     }
 
     update(clientWidth: number, clientHeight: number) {
+
+        // this.pos2.set(clientWidth, clientHeight);
         const zoom = this.zoom;
         const ratio = clientWidth / clientHeight;
         const x = this.posC.x;
