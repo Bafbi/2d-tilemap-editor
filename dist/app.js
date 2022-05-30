@@ -2,34 +2,49 @@ import { Display } from "./class/display.js";
 import { Map } from "./class/map.js";
 import { Sheet } from "./class/sheet.js";
 import baseLevel from "./map.js";
+let lvl = JSON.stringify(baseLevel);
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.has("map-data")) {
+    lvl = decodeURI(urlParams.get("map-data"));
+}
 const tilesheetElem = document.getElementById('tilesheet');
-const spritesheetElem = document.getElementById('spritesheet');
 const canvasElem = document.getElementById('editor');
 const newMapForm = document.getElementById('newMap');
+const downloadElem = document.getElementById('download');
 const tileSheet = new Sheet(tilesheetElem, 16);
-const spriteSheet = new Sheet(spritesheetElem, 16);
-const map = new Map(baseLevel);
+const map = new Map(JSON.parse(lvl));
 const editor = new Display(canvasElem);
+tileSheet.addTile('./assets/path.png', -3);
+tileSheet.addTile('./assets/ice.png', -1);
+tileSheet.addTile('./assets/wall.png', -2);
+tileSheet.addTile('./assets/rock.png', 0);
+tileSheet.addTile('./assets/point_up.png', 1);
+tileSheet.addTile('./assets/point_right.png', 2);
+tileSheet.addTile('./assets/point_down.png', 3);
+tileSheet.addTile('./assets/point_left.png', 4);
+tileSheet.addTile('./assets/breaking.png', 5);
+tileSheet.addTile('./assets/breaked.png', 6);
 function render() {
     editor.fill('BUFFER', 'pink');
-    editor.drawLayer(map.tile, map.width, tileSheet);
-    editor.drawLayer(map.sprite, map.width, spriteSheet);
+    editor.drawMap(tileSheet, map);
     editor.drawRectangle(editor.tileIndex.x * tileSheet.tileSize, editor.tileIndex.y * tileSheet.tileSize, tileSheet.tileSize, tileSheet.tileSize, "rgba(0, 0, 0, 0.6)");
+    editor.resizeContext(document.documentElement.clientWidth, document.documentElement.clientHeight);
     editor.camera.update(editor.context.canvas.width, editor.context.canvas.height);
     editor.render();
     editor.drawGrid(map.width, map.height, tileSheet.tileSize);
 }
 tileSheet.registerClickEvent();
-spriteSheet.registerClickEvent();
 newMapForm.lastElementChild?.addEventListener('click', (e) => {
     e.preventDefault();
     e.stopPropagation();
     console.log(newMapForm.children.namedItem('width')?.value);
-    const width = newMapForm.children.namedItem('width')?.value;
-    const height = newMapForm.children.namedItem('height')?.value;
+    map.width = Number(newMapForm.children.namedItem('width')?.value);
+    map.height = Number(newMapForm.children.namedItem('height')?.value);
+    editor.resizeBuffer(map.width, map.width, tileSheet.tileSize);
+    editor.resizeContext(document.documentElement.clientWidth, document.documentElement.clientHeight);
+    render();
 });
 window.addEventListener('resize', (e) => {
-    editor.resizeContext(document.documentElement.clientWidth - tilesheetElem.clientWidth, document.documentElement.clientHeight);
     editor.render();
 });
 canvasElem.addEventListener('mousemove', (e) => {
@@ -54,18 +69,19 @@ window.addEventListener("mousemove", (event) => {
         editor.camera.posC.y += event.movementY * -0.39 * editor.camera.zoom / 50;
     }
     if (mouseDown && button == 0 && editor.tileIndex.y < map.height && editor.tileIndex.x < map.width) {
-        map.tile[editor.tileIndex.y * map.width + editor.tileIndex.x] = tileSheet.tileIndex;
+        map.data[editor.tileIndex.y * map.width + editor.tileIndex.x] = tileSheet.tiles[tileSheet.tileIndex].index;
+        downloadElem.setAttribute('href', 'data:text/plain;charset=utf-8,' + JSON.stringify(map));
+        downloadElem.setAttribute('download', 'map.json');
     }
     render();
 });
 window.addEventListener("mouseup", () => {
     mouseDown = false;
-    if (button == 0 && editor.tileIndex.y < map.height && editor.tileIndex.x < map.width) {
-        map.tile[editor.tileIndex.y * map.width + editor.tileIndex.x] = tileSheet.tileIndex;
+    if (button == 0 && editor.tileIndex.y < map.height && editor.tileIndex.y > 0 && editor.tileIndex.x < map.width && editor.tileIndex.x > 0) {
+        map.data[editor.tileIndex.y * map.width + editor.tileIndex.x] = tileSheet.tiles[tileSheet.tileIndex].index;
     }
     render();
 });
 editor.camera.posC.set(map.width * tileSheet.tileSize, map.height * tileSheet.tileSize);
-editor.resizeContext(document.documentElement.clientWidth - tilesheetElem.clientWidth, document.documentElement.clientHeight);
 editor.resizeBuffer(map.width, map.height, tileSheet.tileSize);
 render();

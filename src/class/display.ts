@@ -61,33 +61,56 @@ export class Display {
         }
     }
 
-    drawLayer(layer: number[], width: number, sheet: Sheet) {
-        layer.forEach((value, index) => {
-            if (value < 0) {
-                return;
-            }
-            const source_x =
-                (value % sheet.columns) * sheet.tileSize;
-            const source_y =
-                Math.floor(value / sheet.columns) *
-                sheet.tileSize;
-            const destination_x = (index % width) * sheet.tileSize;
+    drawMap(tileSheet: Sheet, map: Map) {
+        map.data.forEach((value, index) => {
+            const tile = tileSheet.tiles.filter((tile) => tile.index == value);
+            if (!tile) return;
+            const destination_x = (index % map.width) * tileSheet.tileSize;
             const destination_y =
-                Math.floor(index / width) * sheet.tileSize;
+                Math.floor(index / map.width) * tileSheet.tileSize;
+            // console.log(tileSheet.tiles[value + 3]);
 
             this.buffer.drawImage(
-                sheet.imageElem,
-                source_x,
-                source_y,
-                sheet.tileSize,
-                sheet.tileSize,
+                tile[0].image,
+                0,
+                0,
+                tileSheet.tileSize,
+                tileSheet.tileSize,
                 destination_x,
                 destination_y,
-                sheet.tileSize,
-                sheet.tileSize
+                tileSheet.tileSize,
+                tileSheet.tileSize
             );
-        });
+        })
     }
+
+    // drawLayer(layer: number[], width: number, sheet: Sheet) {
+    //     layer.forEach((value, index) => {
+    //         if (value < 0) {
+    //             return;
+    //         }
+    //         const source_x =
+    //             (value % sheet.columns) * sheet.tileSize;
+    //         const source_y =
+    //             Math.floor(value / sheet.columns) *
+    //             sheet.tileSize;
+    //         const destination_x = (index % width) * sheet.tileSize;
+    //         const destination_y =
+    //             Math.floor(index / width) * sheet.tileSize;
+
+    //         this.buffer.drawImage(
+    //             sheet.imageElem,
+    //             source_x,
+    //             source_y,
+    //             sheet.tileSize,
+    //             sheet.tileSize,
+    //             destination_x,
+    //             destination_y,
+    //             sheet.tileSize,
+    //             sheet.tileSize
+    //         );
+    //     });
+    // }
 
 
     // drawGrid(tileSize: number, color: string | CanvasGradient | CanvasPattern) {

@@ -23,6 +23,8 @@ dd {
 ul[role='list'],
 ol[role='list'] {
   list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 /* Set core root defaults */
@@ -74,53 +76,62 @@ select {
 }
 
 body {
-  display: grid;
-  /* grid-template-columns: 1 2; */
-  grid-template-columns: 1fr 3fr;
-  grid-template-rows: 1fr 1fr;
-  grid-template-areas: 
-  "tilesheet editor"
-  "spritesheet editor";
+  height: 100vh;
+  overflow: hidden;
 }
 
-#tilesheet {
-  grid-area: tilesheet;
-}
-#spritesheet{
-  grid-area: spritesheet;
-}
-#editor{
-  grid-area: editor;
-  height: 100%;
+#editor{  
   width: 100%;
+  height: 100%;
 }
 
-.sheetWindow {
-    /* position: absolute; */
-    display: flex;
-    flex-direction: column;
-    border: 0.2rem solid black;
+.cache {
+  display: none;
 }
-.sheetWindow > img {
-  border: 0.1rem solid black;
-}
-
-.toolbar {
-  height: 2rem;
-  border-bottom: 0.1rem solid black;
-  /* background-color: black; */
-}
-/* 
-#spritesheet {
-  top: 50%;
-} */
 
 #newMap{
   position: absolute;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+  top: 10%;
+  left: 50%;
 }
+
+#newMap button{
+  height: 100%;
+}
+
+#tilesheet{
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  max-height: 100%;
+  width: max-content;
+}
+
+#tilesheet li img {
+  image-rendering: pixelated;
+  width: 64px;
+}
+
+#tilesheet li {
+  border: solid rgb(184, 255, 4) 2px;
+}
+
+#tilesheet li.selected {
+  border-color:  rgb(255, 6, 188) ;
+}
+
+.new-map {
+  position: absolute;
+  top: 1%;
+  right: 1%;
+}
+
+#download {
+  position: absolute;
+  top: 1%;
+  right: 12%;
+  background-color: black;
+}
+
+

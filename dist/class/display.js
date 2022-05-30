@@ -52,17 +52,14 @@ export class Display {
             this.context.fillRect(0, posY - 1, this.context.canvas.width, 2);
         }
     }
-    drawLayer(layer, width, sheet) {
-        layer.forEach((value, index) => {
-            if (value < 0) {
+    drawMap(tileSheet, map) {
+        map.data.forEach((value, index) => {
+            const tile = tileSheet.tiles.filter((tile) => tile.index == value);
+            if (!tile)
                 return;
-            }
-            const source_x = (value % sheet.columns) * sheet.tileSize;
-            const source_y = Math.floor(value / sheet.columns) *
-                sheet.tileSize;
-            const destination_x = (index % width) * sheet.tileSize;
-            const destination_y = Math.floor(index / width) * sheet.tileSize;
-            this.buffer.drawImage(sheet.imageElem, source_x, source_y, sheet.tileSize, sheet.tileSize, destination_x, destination_y, sheet.tileSize, sheet.tileSize);
+            const destination_x = (index % map.width) * tileSheet.tileSize;
+            const destination_y = Math.floor(index / map.width) * tileSheet.tileSize;
+            this.buffer.drawImage(tile[0].image, 0, 0, tileSheet.tileSize, tileSheet.tileSize, destination_x, destination_y, tileSheet.tileSize, tileSheet.tileSize);
         });
     }
     render() {

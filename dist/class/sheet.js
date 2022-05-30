@@ -1,21 +1,35 @@
+import { Tile } from "./tile.js";
 export class Sheet {
-    imageElem;
+    container;
+    tiles = new Array();
     tileSize;
-    columns;
-    rows;
-    tileIndex = 6;
-    ratio;
-    constructor(contener, tileSize) {
-        this.imageElem = contener.lastElementChild;
+    tileIndex = 0;
+    constructor(container, tileSize) {
+        this.container = container;
         this.tileSize = tileSize;
-        this.columns = this.imageElem.naturalWidth / this.tileSize;
-        this.rows = this.imageElem.naturalHeight / this.tileSize;
-        this.ratio = this.imageElem.width / this.imageElem.naturalWidth;
     }
     registerClickEvent() {
-        this.imageElem.addEventListener('click', (e) => {
-            this.tileIndex = Math.floor(e.offsetY / this.tileSize / this.ratio) * this.columns + Math.floor(e.offsetX / this.tileSize / this.ratio);
+        this.container.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log(e.target);
+            this.tiles.forEach((tile, index) => {
+                tile.image.parentElement?.classList.remove('selected');
+                if (tile.image.isSameNode(e.target)) {
+                    this.tileIndex = index;
+                }
+            });
+            const img = e.target;
+            img.parentElement?.classList.add('selected');
             console.log(this.tileIndex);
         });
+    }
+    addTile(imgSrc, index) {
+        const li = document.createElement('li');
+        const img = document.createElement('img');
+        img.src = imgSrc;
+        this.tiles.push(new Tile(img, index));
+        li.appendChild(img);
+        this.container.appendChild(li);
     }
 }

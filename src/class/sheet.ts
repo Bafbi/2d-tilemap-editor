@@ -1,26 +1,42 @@
+import { Tile } from "./tile.js";
+
 export class Sheet {
 
-    imageElem: HTMLImageElement;
+    container: HTMLOListElement;
+    tiles: Tile[] = new Array<Tile>();
     tileSize: number;
-    columns: number;
-    rows: number;
-    tileIndex: number = 6;
-    ratio: number;
+    tileIndex: number = 0;
 
-    constructor(contener: HTMLElement, tileSize: number) {
-        this.imageElem = contener.lastElementChild as HTMLImageElement;
+    constructor(container: HTMLOListElement, tileSize: number) {
+        this.container = container;
         this.tileSize = tileSize;
-        this.columns = this.imageElem.naturalWidth / this.tileSize;
-        this.rows = this.imageElem.naturalHeight / this.tileSize;
-        this.ratio = this.imageElem.width / this.imageElem.naturalWidth
     }
 
-    registerClickEvent() {
-        this.imageElem.addEventListener('click', (e) => {
-            // console.log(`${Math.floor(e.offsetY / this.tileSize / this.ratio)} x ${this.columns} =  ${Math.floor(e.offsetY / this.tileSize / this.ratio) * this.columns} : ${Math.floor(e.offsetX / this.tileSize / this.ratio}`);
-            this.tileIndex = Math.floor(e.offsetY / this.tileSize / this.ratio) * this.columns + Math.floor(e.offsetX / this.tileSize / this.ratio)
-            console.log(this.tileIndex);
 
+    registerClickEvent() {
+        this.container.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            console.log(e.target);
+            this.tiles.forEach((tile, index) => {
+                tile.image.parentElement?.classList.remove('selected');
+                if (tile.image.isSameNode(e.target as Node)) {
+                    this.tileIndex = index;
+                }
+            })
+            const img = e.target as Node;
+            img.parentElement?.classList.add('selected');
+            console.log(this.tileIndex);
         })
+    }
+
+    addTile(imgSrc: string, index: number) {
+        const li = document.createElement('li');
+        const img = document.createElement('img');
+        img.src = imgSrc;
+        this.tiles.push(new Tile(img, index));
+        li.appendChild(img);
+        this.container.appendChild(li);
     }
 }

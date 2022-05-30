@@ -8,23 +8,25 @@
     <script defer src="./dist/app.js" type="module"></script>
     <link rel="stylesheet" href="./style.css">
     <title>level editor</title>
+    <script>
+        function displayMapForm() {
+        const newMapForm = document.getElementById('newMap');
+        newMapForm.classList.toggle('cache');
+        }
+    </script>
 </head>
 <body>
-    <div id="newMap" style="display: none;">
-            <input type="number" name="width" id="map-width">
-            <input type="number" name="height" id="map-height">
-            <button></button>
+    <a id="download">Download</a>
+    <button class="new-map" onclick="displayMapForm()">New Map</button>
 
-    </div>
-    <div id="tilesheet" class="sheetWindow">
-        <div class="toolbar"></div>
-        <img src="./assets/tilesheet.png" alt="la tilesheet" width="200px" height="200px" style="image-rendering: pixelated;">
-    </div>
-    <div id="spritesheet" class="sheetWindow">
-        <div class="toolbar"></div>
-        <img src="./assets/spritesheet.png" alt="la spritesheet" width="200px" height="200px" style="image-rendering: pixelated;">
+    <div id="newMap" class="cache">
+            <input type="number" name="width" id="map-width" placeholder="width">
+            <input type="number" name="height" id="map-height" placeholder="height">
+            <button>Create</button>
     </div>
 
+
+    <ol role='list' id="tilesheet"></ol>
     <canvas id="editor"></canvas>
 
 </body>
