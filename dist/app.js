@@ -11,6 +11,7 @@ const tilesheetElem = document.getElementById('tilesheet');
 const canvasElem = document.getElementById('editor');
 const newMapForm = document.getElementById('newMap');
 const downloadElem = document.getElementById('download');
+const publishElem = document.getElementById('publish');
 const tileSheet = new Sheet(tilesheetElem, 16);
 const map = new Map(JSON.parse(lvl));
 const editor = new Display(canvasElem);
@@ -40,7 +41,8 @@ newMapForm.lastElementChild?.addEventListener('click', (e) => {
     console.log(newMapForm.children.namedItem('width')?.value);
     map.width = Number(newMapForm.children.namedItem('width')?.value);
     map.height = Number(newMapForm.children.namedItem('height')?.value);
-    editor.resizeBuffer(map.width, map.width, tileSheet.tileSize);
+    map.data.length = map.width * map.height;
+    editor.resizeBuffer(map.width, map.height, tileSheet.tileSize);
     editor.resizeContext(document.documentElement.clientWidth, document.documentElement.clientHeight);
     render();
 });
@@ -81,6 +83,22 @@ window.addEventListener("mouseup", () => {
         map.data[editor.tileIndex.y * map.width + editor.tileIndex.x] = tileSheet.tiles[tileSheet.tileIndex].index;
     }
     render();
+});
+downloadElem.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(map).replaceAll("null", "-1")));
+    element.setAttribute('download', "map.json");
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+});
+publishElem.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    document.location.href = 'http://localhost/upload.php?map-data=' + encodeURIComponent(JSON.stringify(map).replaceAll("null", "-1"));
 });
 editor.camera.posC.set(map.width * tileSheet.tileSize, map.height * tileSheet.tileSize);
 editor.resizeBuffer(map.width, map.height, tileSheet.tileSize);
