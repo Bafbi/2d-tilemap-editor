@@ -95,11 +95,22 @@ downloadElem.addEventListener('click', (e) => {
     element.click();
     document.body.removeChild(element);
 });
-publishElem.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    document.location.href = 'http://localhost/upload.php?map-data=' + encodeURIComponent(JSON.stringify(map).replaceAll("null", "-1"));
-});
+if (urlParams.has("map-id")) {
+    console.log(urlParams.get("map-id"));
+    publishElem.textContent = "Publish Edit";
+    publishElem.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        document.location.href = 'http://localhost/upload.php?map-id=' + urlParams.get('map-id') + '&map-data=' + encodeURIComponent(JSON.stringify(map).replaceAll("null", "-1"));
+    });
+}
+else {
+    publishElem.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        document.location.href = 'http://localhost/upload.php?map-data=' + encodeURIComponent(JSON.stringify(map).replaceAll("null", "-1"));
+    });
+}
 editor.camera.posC.set(map.width * tileSheet.tileSize, map.height * tileSheet.tileSize);
 editor.resizeBuffer(map.width, map.height, tileSheet.tileSize);
 render();
