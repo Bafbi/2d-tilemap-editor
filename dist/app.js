@@ -7,6 +7,9 @@ const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.has("map-data")) {
     lvl = decodeURI(urlParams.get("map-data"));
 }
+else if (localStorage.getItem("map-edit") != null) {
+    lvl = localStorage.getItem("map-edit");
+}
 const tilesheetElem = document.getElementById('tilesheet');
 const canvasElem = document.getElementById('editor');
 const newMapForm = document.getElementById('newMap');
@@ -72,8 +75,6 @@ window.addEventListener("mousemove", (event) => {
     }
     if (mouseDown && button == 0 && editor.tileIndex.y < map.height && editor.tileIndex.x < map.width) {
         map.data[editor.tileIndex.y * map.width + editor.tileIndex.x] = tileSheet.tiles[tileSheet.tileIndex].index;
-        downloadElem.setAttribute('href', 'data:text/plain;charset=utf-8,' + JSON.stringify(map));
-        downloadElem.setAttribute('download', 'map.json');
     }
     render();
 });
@@ -82,6 +83,7 @@ window.addEventListener("mouseup", () => {
     if (button == 0 && editor.tileIndex.y < map.height && editor.tileIndex.y > 0 && editor.tileIndex.x < map.width && editor.tileIndex.x > 0) {
         map.data[editor.tileIndex.y * map.width + editor.tileIndex.x] = tileSheet.tiles[tileSheet.tileIndex].index;
     }
+    localStorage.setItem('map-edit', JSON.stringify(map));
     render();
 });
 downloadElem.addEventListener('click', (e) => {
