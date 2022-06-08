@@ -9,10 +9,10 @@ export class Map {
     end: Vec2 = new Vec2();
 
     constructor(map: any) {
-        this.width = map.width;
-        this.height = map.height;
-        this.data = map.data;
-        this.start = map.start;
-        this.end = map.end;
+        this.width = map.width as number;
+        this.height = map.height as number;
+        this.data = map.data as number[];
+        this.start = map.start as Vec2;
+        this.end = map.end as Vec2;
     }
 }

@@ -84,6 +84,21 @@ export class Display {
         })
     }
 
+    drawTile(image: HTMLImageElement, tileIndex: Vec2, tileSize: number) {
+        this.buffer.drawImage(
+            image,
+            0,
+            0,
+            tileSize,
+            tileSize,
+            tileIndex.x * tileSize,
+            tileIndex.y * tileSize,
+            tileSize,
+            tileSize
+        );
+    }
+
+
     // drawLayer(layer: number[], width: number, sheet: Sheet) {
     //     layer.forEach((value, index) => {
     //         if (value < 0) {

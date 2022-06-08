@@ -1,6 +1,7 @@
 import { Display } from "./class/display.js";
 import { Map } from "./class/map.js";
 import { Sheet } from "./class/sheet.js";
+import { Vec2 } from "./class/vec2.js";
 
 import baseLevel from "./map.js";
 
@@ -36,12 +37,16 @@ tileSheet.addTile('./assets/point_down.png', 3);
 tileSheet.addTile('./assets/point_left.png', 4);
 tileSheet.addTile('./assets/breaking.png', 5);
 tileSheet.addTile('./assets/breaked.png', 6);
+tileSheet.addTile('./assets/start.png', -20);
+tileSheet.addTile('./assets/end.png', -21);
 
 
 
 function render() {
     editor.fill('BUFFER', 'pink');
     editor.drawMap(tileSheet, map);
+    editor.drawTile(tileSheet.tiles.find((tile) => tile.index == -20)?.image as HTMLImageElement, map.start, tileSheet.tileSize);
+    editor.drawTile(tileSheet.tiles.find((tile) => tile.index == -21)?.image as HTMLImageElement, map.end, tileSheet.tileSize);
     editor.drawRectangle(editor.tileIndex.x * tileSheet.tileSize, editor.tileIndex.y * tileSheet.tileSize, tileSheet.tileSize, tileSheet.tileSize, "rgba(0, 0, 0, 0.6)");
     editor.resizeContext(document.documentElement.clientWidth, document.documentElement.clientHeight);
     editor.camera.update(editor.context.canvas.width, editor.context.canvas.height);
@@ -95,7 +100,14 @@ window.addEventListener("mousemove", (event) => {
         editor.camera.posC.y += event.movementY * -0.39 * editor.camera.zoom / 50;
     }
     if (mouseDown && button == 0 && editor.tileIndex.y < map.height && editor.tileIndex.x < map.width) {
-        map.data[editor.tileIndex.y * map.width + editor.tileIndex.x] = tileSheet.tiles[tileSheet.tileIndex].index;
+        if (tileSheet.tiles[tileSheet.tileIndex].index == -20) {
+            map.start = new Vec2(editor.tileIndex.x, editor.tileIndex.y);
+        } else if (tileSheet.tiles[tileSheet.tileIndex].index == -21) {
+            map.end = new Vec2(editor.tileIndex.x, editor.tileIndex.y);
+        } else {
+            map.data[editor.tileIndex.y * map.width + editor.tileIndex.x] = tileSheet.tiles[tileSheet.tileIndex].index;
+        }
+
     }
     render();
 
@@ -103,7 +115,13 @@ window.addEventListener("mousemove", (event) => {
 window.addEventListener("mouseup", () => {
     mouseDown = false;
     if (button == 0 && editor.tileIndex.y < map.height && editor.tileIndex.y > 0 && editor.tileIndex.x < map.width && editor.tileIndex.x > 0) {
-        map.data[editor.tileIndex.y * map.width + editor.tileIndex.x] = tileSheet.tiles[tileSheet.tileIndex].index;
+        if (tileSheet.tiles[tileSheet.tileIndex].index == -20) {
+            map.start.set(editor.tileIndex.x, editor.tileIndex.y);
+        } else if (tileSheet.tiles[tileSheet.tileIndex].index == -21) {
+            map.end.set(editor.tileIndex.x, editor.tileIndex.y);
+        } else {
+            map.data[editor.tileIndex.y * map.width + editor.tileIndex.x] = tileSheet.tiles[tileSheet.tileIndex].index;
+        }
     }
     localStorage.setItem('map-edit', JSON.stringify(map));
     render();

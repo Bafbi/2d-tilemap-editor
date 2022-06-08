@@ -62,6 +62,9 @@ export class Display {
             this.buffer.drawImage(tile[0].image, 0, 0, tileSheet.tileSize, tileSheet.tileSize, destination_x, destination_y, tileSheet.tileSize, tileSheet.tileSize);
         });
     }
+    drawTile(image, tileIndex, tileSize) {
+        this.buffer.drawImage(image, 0, 0, tileSize, tileSize, tileIndex.x * tileSize, tileIndex.y * tileSize, tileSize, tileSize);
+    }
     render() {
         this.fill('CONTEXT', 'white');
         this.context.drawImage(this.buffer.canvas, this.camera.pos1.x, this.camera.pos1.y, this.camera.pos2.x, this.camera.pos2.y, 0, 0, this.context.canvas.width, this.context.canvas.height);
