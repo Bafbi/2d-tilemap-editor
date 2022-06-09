@@ -16,6 +16,7 @@ const canvasElem = document.getElementById('editor');
 const newMapForm = document.getElementById('newMap');
 const downloadElem = document.getElementById('download');
 const publishElem = document.getElementById('publish');
+const testElem = document.getElementById('test');
 const tileSheet = new Sheet(tilesheetElem, 16);
 const map = new Map(JSON.parse(lvl));
 const editor = new Display(canvasElem);
@@ -124,16 +125,21 @@ if (urlParams.has("map-id")) {
     publishElem.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        document.location.href = 'http://localhost/upload.php?map-id=' + urlParams.get('map-id') + '&map-data=' + encodeURIComponent(JSON.stringify(map).replaceAll("null", "-1"));
+        document.location.href = 'http://localhost/create.php?map-id=' + urlParams.get('map-id') + '&map-data=' + encodeURIComponent(JSON.stringify(map).replaceAll("null", "-1"));
     });
 }
 else {
     publishElem.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        document.location.href = 'http://localhost/upload.php?map-data=' + encodeURIComponent(JSON.stringify(map).replaceAll("null", "-1"));
+        document.location.href = 'http://localhost/create.php?map-data=' + encodeURIComponent(JSON.stringify(map).replaceAll("null", "-1"));
     });
 }
+testElem.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    document.location.href = 'https://bafbi.github.io/glagla/?map-data=' + encodeURIComponent(JSON.stringify(map).replaceAll("null", "-1"));
+});
 editor.camera.posC.set(map.width * tileSheet.tileSize, map.height * tileSheet.tileSize);
 editor.resizeBuffer(map.width, map.height, tileSheet.tileSize);
 render();
